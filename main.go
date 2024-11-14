@@ -64,7 +64,7 @@ func main() {
 
 	// Configurar el middleware CORS
 	c := cors.New(cors.Options{
-		AllowedOrigins:   []string{"https://net-project-nextjs.vercel.app/"}, // Permitir solicitudes desde localhost:3000 (frontend)
+		AllowedOrigins:   []string{"https://net-project-nextjs.vercel.app"}, // Permitir solicitudes desde localhost:3000 (frontend)
 		AllowedMethods:   []string{"GET", "POST", "PUT", "DELETE", "OPTIONS"},
 		AllowedHeaders:   []string{"Content-Type", "Authorization"},
 		AllowCredentials: true,
