@@ -14,7 +14,7 @@ type UserRepository struct {
 
 func (repo *UserRepository) GetUserByEmail(email string) (*models.User, error) {
 	user := &models.User{}
-	query := "SELECT id_usuario, nombre, ocupacion, email, contraseña, foto_perfil FROM Usuario WHERE email = ?"
+	query := "SELECT id_usuario, nombre, ocupacion, email, contraseña, foto_perfil FROM usuario WHERE email = ?"
 	err := repo.DB.QueryRow(query, email).Scan(&user.ID, &user.Nombre, &user.Ocupacion, &user.Email, &user.Password, &user.FotoPerfil)
 	if err != nil {
 		if err == sql.ErrNoRows {
@@ -26,11 +26,11 @@ func (repo *UserRepository) GetUserByEmail(email string) (*models.User, error) {
 }
 
 func (repo *UserRepository) CreateUser(user *models.User) (*models.User, error) {
-	result, err := repo.DB.Exec("INSERT INTO Usuario (nombre, ocupacion, contraseña, email) VALUES (?, ?, ?, ?)",
+	result, err := repo.DB.Exec("INSERT INTO usuario (nombre, ocupacion, contraseña, email) VALUES (?, ?, ?, ?)",
 		user.Nombre, user.Ocupacion, user.Password, user.Email)
 
 	if err != nil {
-		log.Printf("Error al ejecutar INSERT en Usuario: %v", err)
+		log.Printf("Error al ejecutar INSERT en usuario: %v", err)
 		return nil, err
 	}
 
@@ -43,10 +43,10 @@ func (repo *UserRepository) CreateUser(user *models.User) (*models.User, error) 
 
 	// Recuperar el usuario recién creado para devolverlo completo
 	newUser := &models.User{}
-	query := "SELECT id_usuario, nombre, ocupacion, email FROM Usuario WHERE id_usuario = ?"
+	query := "SELECT id_usuario, nombre, ocupacion, email FROM usuario WHERE id_usuario = ?"
 	err = repo.DB.QueryRow(query, userID).Scan(&newUser.ID, &newUser.Nombre, &newUser.Ocupacion, &newUser.Email)
 	if err != nil {
-		log.Printf("Error al ejecutar SELECT en Usuario para recuperar el nuevo usuario: %v", err)
+		log.Printf("Error al ejecutar SELECT en usuario para recuperar el nuevo usuario: %v", err)
 		return nil, err
 	}
 
@@ -55,7 +55,7 @@ func (repo *UserRepository) CreateUser(user *models.User) (*models.User, error) 
 
 func (repo *UserRepository) GetUserByID(id int) (*models.User, error) {
 	user := &models.User{}
-	query := "SELECT id_usuario, nombre, ocupacion, email, foto_perfil FROM Usuario WHERE id_usuario = ?"
+	query := "SELECT id_usuario, nombre, ocupacion, email, foto_perfil FROM usuario WHERE id_usuario = ?"
 	err := repo.DB.QueryRow(query, id).Scan(&user.ID, &user.Nombre, &user.Ocupacion, &user.Email, &user.FotoPerfil)
 	if err != nil {
 		return nil, err
@@ -72,11 +72,11 @@ func (repo *UserRepository) UpdateUserProfile(id int, user *models.User) (*model
 	// Verificar si se proporcionó una foto de perfil
 	if user.FotoPerfil != "" {
 		// Si se proporciona una foto de perfil, actualizamos el campo con la URL
-		query = `UPDATE Usuario SET nombre = ?, ocupacion = ?, email = ?, foto_perfil = ? WHERE id_usuario = ?`
+		query = `UPDATE usuario SET nombre = ?, ocupacion = ?, email = ?, foto_perfil = ? WHERE id_usuario = ?`
 		args = append(args, user.Nombre, user.Ocupacion, user.Email, user.FotoPerfil, id)
 	} else {
 		// Si no se proporciona foto de perfil, no la actualizamos (dejar NULL)
-		query = `UPDATE Usuario SET nombre = ?, ocupacion = ?, email = ? WHERE id_usuario = ?`
+		query = `UPDATE usuario SET nombre = ?, ocupacion = ?, email = ? WHERE id_usuario = ?`
 		args = append(args, user.Nombre, user.Ocupacion, user.Email, id)
 	}
 
@@ -89,7 +89,7 @@ func (repo *UserRepository) UpdateUserProfile(id int, user *models.User) (*model
 
 	// Recuperar el usuario actualizado
 	updatedUser := &models.User{}
-	query = "SELECT id_usuario, nombre, ocupacion, email, foto_perfil FROM Usuario WHERE id_usuario = ?"
+	query = "SELECT id_usuario, nombre, ocupacion, email, foto_perfil FROM usuario WHERE id_usuario = ?"
 	err = repo.DB.QueryRow(query, id).Scan(&updatedUser.ID, &updatedUser.Nombre, &updatedUser.Ocupacion, &updatedUser.Email, &updatedUser.FotoPerfil)
 	if err != nil {
 		log.Printf("Error al recuperar el usuario actualizado: %v", err)

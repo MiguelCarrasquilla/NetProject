@@ -13,7 +13,7 @@ type FairRepository struct {
 // GetAllFairs obtiene todas las ferias de la base de datos
 func (repo *FairRepository) GetAllFairs() ([]models.Fair, error) {
 	var fairs []models.Fair
-	query := "SELECT id_feria, titulo, descripcion, fecha_inicio, id_usuario, foto_feria FROM Feria"
+	query := "SELECT id_feria, titulo, descripcion, fecha_inicio, id_usuario, foto_feria FROM feria"
 	rows, err := repo.DB.Query(query)
 	if err != nil {
 		log.Printf("Error al obtener las ferias: %v", err)
@@ -42,13 +42,13 @@ func (repo *FairRepository) GetAllFairs() ([]models.Fair, error) {
 // GetFairByID obtiene una feria por su ID
 func (repo *FairRepository) GetFairByID(id int) (*models.Fair, error) {
 	fair := &models.Fair{}
-	query := "SELECT id_feria, titulo, descripcion, fecha_inicio, id_usuario, foto_feria FROM Feria WHERE id_feria = ?"
+	query := "SELECT id_feria, titulo, descripcion, fecha_inicio, id_usuario, foto_feria FROM feria WHERE id_feria = ?"
 	err := repo.DB.QueryRow(query, id).Scan(&fair.ID, &fair.Titulo, &fair.Descripcion, &fair.FechaInicio, &fair.IdUsuario, &fair.FotoFeria)
 	if err != nil {
 		if err == sql.ErrNoRows {
 			log.Printf("No se encontró una feria con ID %d", id)
 		} else {
-			log.Printf("Error al ejecutar SELECT en Feria: %v", err)
+			log.Printf("Error al ejecutar SELECT en feria: %v", err)
 		}
 		return nil, err
 	}
@@ -58,10 +58,10 @@ func (repo *FairRepository) GetFairByID(id int) (*models.Fair, error) {
 
 // CreateFair inserta una nueva feria en la base de datos y la devuelve
 func (repo *FairRepository) CreateFair(fair *models.Fair) (*models.Fair, error) {
-	result, err := repo.DB.Exec("INSERT INTO Feria (titulo, descripcion, fecha_inicio, id_usuario, foto_feria) VALUES (?, ?, ?, ?, ?)",
+	result, err := repo.DB.Exec("INSERT INTO feria (titulo, descripcion, fecha_inicio, id_usuario, foto_feria) VALUES (?, ?, ?, ?, ?)",
 		fair.Titulo, fair.Descripcion, fair.FechaInicio, fair.IdUsuario, fair.FotoFeria)
 	if err != nil {
-		log.Printf("Error al ejecutar INSERT en Feria: %v", err)
+		log.Printf("Error al ejecutar INSERT en feria: %v", err)
 		return nil, err
 	}
 
@@ -74,10 +74,10 @@ func (repo *FairRepository) CreateFair(fair *models.Fair) (*models.Fair, error) 
 
 	// Recuperar la feria recién creada para devolverla completa
 	newFair := &models.Fair{}
-	query := "SELECT id_feria, titulo, descripcion, fecha_inicio, id_usuario, foto_feria FROM Feria WHERE id_feria = ?"
+	query := "SELECT id_feria, titulo, descripcion, fecha_inicio, id_usuario, foto_feria FROM feria WHERE id_feria = ?"
 	err = repo.DB.QueryRow(query, fairID).Scan(&newFair.ID, &newFair.Titulo, &newFair.Descripcion, &newFair.FechaInicio, &newFair.IdUsuario, &newFair.FotoFeria)
 	if err != nil {
-		log.Printf("Error al ejecutar SELECT en Feria para recuperar la nueva feria: %v", err)
+		log.Printf("Error al ejecutar SELECT en feria para recuperar la nueva feria: %v", err)
 		return nil, err
 	}
 
@@ -86,7 +86,7 @@ func (repo *FairRepository) CreateFair(fair *models.Fair) (*models.Fair, error) 
 
 func (repo *FairRepository) UpdateFair(id int, fair *models.Fair) (*models.Fair, error) {
 	// Preparar la consulta de actualización
-	query := `UPDATE Feria SET titulo = ?, descripcion = ?, fecha_inicio = ?, id_usuario = ?, foto_feria = ? WHERE id_feria = ?`
+	query := `UPDATE feria SET titulo = ?, descripcion = ?, fecha_inicio = ?, id_usuario = ?, foto_feria = ? WHERE id_feria = ?`
 
 	// Aquí utilizamos .String si FotoFeria tiene valor, y "" si es nulo
 	fotoFeriaValue := ""
@@ -96,16 +96,16 @@ func (repo *FairRepository) UpdateFair(id int, fair *models.Fair) (*models.Fair,
 
 	_, err := repo.DB.Exec(query, fair.Titulo, fair.Descripcion, fair.FechaInicio, fair.IdUsuario, fotoFeriaValue, id)
 	if err != nil {
-		log.Printf("Error al ejecutar UPDATE en Feria: %v", err)
+		log.Printf("Error al ejecutar UPDATE en feria: %v", err)
 		return nil, err
 	}
 
 	// Recuperar la feria actualizada
 	updatedFair := &models.Fair{}
-	query = "SELECT id_feria, titulo, descripcion, fecha_inicio, id_usuario, foto_feria FROM Feria WHERE id_feria = ?"
+	query = "SELECT id_feria, titulo, descripcion, fecha_inicio, id_usuario, foto_feria FROM feria WHERE id_feria = ?"
 	err = repo.DB.QueryRow(query, id).Scan(&updatedFair.ID, &updatedFair.Titulo, &updatedFair.Descripcion, &updatedFair.FechaInicio, &updatedFair.IdUsuario, &updatedFair.FotoFeria)
 	if err != nil {
-		log.Printf("Error al ejecutar SELECT en Feria para recuperar la feria actualizada: %v", err)
+		log.Printf("Error al ejecutar SELECT en feria para recuperar la feria actualizada: %v", err)
 		return nil, err
 	}
 
@@ -115,10 +115,10 @@ func (repo *FairRepository) UpdateFair(id int, fair *models.Fair) (*models.Fair,
 // DeleteFair elimina una feria de la base de datos
 func (repo *FairRepository) DeleteFair(id int) error {
 	// Preparar la consulta para eliminar la feria por ID
-	query := "DELETE FROM Feria WHERE id_feria = ?"
+	query := "DELETE FROM feria WHERE id_feria = ?"
 	_, err := repo.DB.Exec(query, id)
 	if err != nil {
-		log.Printf("Error al ejecutar DELETE en Feria: %v", err)
+		log.Printf("Error al ejecutar DELETE en feria: %v", err)
 		return err
 	}
 
