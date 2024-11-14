@@ -156,7 +156,7 @@ func (c *FairController) CreateFair(w http.ResponseWriter, r *http.Request) {
 	// Subir la foto a Cloudinary
 	if file != nil {
 		// Crear un nombre único para la foto usando el ID de la feria
-		publicID := "fair_picture_" + strconv.Itoa(fair.ID)
+		publicID := "fair_picture_" + strconv.Itoa(fair.IdUsuario)
 
 		// Usar UploadParams de Cloudinary con nombre dinámico
 		uploadParams := uploader.UploadParams{
